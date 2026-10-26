@@ -1,0 +1,140 @@
+package com.horvickk.memory.game.exercises
+
+import com.horvickk.memory.game.Exercise
+import com.horvickk.memory.game.plural
+
+private fun units(one: String, few: String, many: String): (Int) -> String =
+    { plural(it, one, few, many).uppercase() }
+
+/** Все упражнения в порядке отображения. id — ключ хранения результатов, менять нельзя. */
+val EXERCISES: List<Exercise> = listOf(
+    Exercise(
+        id = "sequence",
+        title = "ВСПЫШКИ",
+        subtitle = "ПОВТОРИ ПОРЯДОК ВСПЫШЕК",
+        rules = "КЛЕТКИ ВСПЫХИВАЮТ ПО ОЧЕРЕДИ — ПОВТОРИ ПОРЯДОК. НА КАЖДОМ УРОВНЕ ДОБАВЛЯЕТСЯ ЕЩЁ ОДНА ВСПЫШКА",
+        formatScore = units("вспышка", "вспышки", "вспышек"),
+        play = { SequenceGame(it) },
+    ),
+    Exercise(
+        id = "matrix",
+        title = "МАТРИЦА",
+        subtitle = "ЗАПОМНИ ЗАКРАШЕННЫЕ КЛЕТКИ",
+        rules = "НЕСКОЛЬКО КЛЕТОК НЕНАДОЛГО ЗАКРАСЯТСЯ. ОТМЕТЬ ИХ ПО ПАМЯТИ. ТРИ ПРОМАХА НА УРОВНЕ — МИНУС ЖИЗНЬ",
+        formatScore = units("клетка", "клетки", "клеток"),
+        play = { MatrixGame(it) },
+    ),
+    Exercise(
+        id = "number",
+        title = "ЧИСЛО",
+        subtitle = "ЗАПОМНИ И ВВЕДИ ЧИСЛО",
+        rules = "ЗАПОМНИ ЧИСЛО И ВВЕДИ ЕГО, КОГДА ОНО ИСЧЕЗНЕТ. С КАЖДЫМ УРОВНЕМ ЧИСЛО ДЛИННЕЕ НА ОДНУ ЦИФРУ",
+        formatScore = units("цифра", "цифры", "цифр"),
+        play = { NumberGame(it) },
+    ),
+    Exercise(
+        id = "reverse",
+        title = "ЗАДОМ НАПЕРЁД",
+        subtitle = "ВВЕДИ ЦИФРЫ В ОБРАТНОМ ПОРЯДКЕ",
+        rules = "ЦИФРЫ ПОЯВЛЯЮТСЯ ПО ОДНОЙ. ВВЕДИ ИХ В ОБРАТНОМ ПОРЯДКЕ — ОТ ПОСЛЕДНЕЙ К ПЕРВОЙ",
+        formatScore = units("цифра", "цифры", "цифр"),
+        play = { ReverseGame(it) },
+    ),
+    Exercise(
+        id = "pairs",
+        title = "ПАРЫ",
+        subtitle = "НАЙДИ ВСЕ ПАРЫ КАРТОЧЕК",
+        rules = "ОТКРЫВАЙ ПО ДВЕ КАРТОЧКИ И ИЩИ ОДИНАКОВЫЕ. ЧЕМ МЕНЬШЕ ХОДОВ ПОНАДОБИТСЯ, ТЕМ ЛУЧШЕ",
+        lowerIsBetter = true,
+        formatScore = units("ход", "хода", "ходов"),
+        play = { PairsGame(it) },
+    ),
+    Exercise(
+        id = "chimp",
+        title = "СКРЫТЫЕ ЧИСЛА",
+        subtitle = "НАЖИМАЙ НА ЧИСЛА ПО ВОЗРАСТАНИЮ",
+        rules = "ЗАПОМНИ, ГДЕ СТОЯТ ЧИСЛА. ПОСЛЕ НАЖАТИЯ НА 1 ОСТАЛЬНЫЕ СКРОЮТСЯ — НАЖИМАЙ ИХ ПО ВОЗРАСТАНИЮ",
+        formatScore = units("число", "числа", "чисел"),
+        play = { ChimpGame(it) },
+    ),
+    Exercise(
+        id = "colors",
+        title = "ЦВЕТА",
+        subtitle = "ПОВТОРИ ПОСЛЕДОВАТЕЛЬНОСТЬ ЦВЕТОВ",
+        rules = "ЦВЕТА ПОКАЗЫВАЮТСЯ ПО ОДНОМУ. НАЖМИ НА НИХ В ТОМ ЖЕ ПОРЯДКЕ",
+        formatScore = units("цвет", "цвета", "цветов"),
+        play = { ColorsGame(it) },
+    ),
+    Exercise(
+        id = "verbal",
+        title = "БЫЛО ИЛИ НЕТ",
+        subtitle = "СЛОВО УЖЕ ВСТРЕЧАЛОСЬ?",
+        rules = "СЛОВА ПОЯВЛЯЮТСЯ ПО ОДНОМУ. ОТВЕЧАЙ, ВСТРЕЧАЛОСЬ ЛИ СЛОВО РАНЬШЕ. ТРИ ОШИБКИ — КОНЕЦ ИГРЫ",
+        formatScore = units("слово", "слова", "слов"),
+        play = { VerbalGame(it) },
+    ),
+    Exercise(
+        id = "change",
+        title = "ЧТО ИЗМЕНИЛОСЬ",
+        subtitle = "НАЙДИ ИЗМЕНИВШУЮСЯ ФИГУРУ",
+        rules = "ЗАПОМНИ ФИГУРЫ. ПОСЛЕ ПАУЗЫ ОДНА ИЗ НИХ ПОМЕНЯЕТ ФОРМУ ИЛИ ЦВЕТ — НАЙДИ ЕЁ",
+        formatScore = units("фигура", "фигуры", "фигур"),
+        play = { ChangeGame(it) },
+    ),
+    Exercise(
+        id = "location",
+        title = "ГДЕ ЭТО БЫЛО",
+        subtitle = "ЗАПОМНИ РАСПОЛОЖЕНИЕ ФИГУР",
+        rules = "ЗАПОМНИ, ГДЕ СТОЯТ ФИГУРЫ. ЗАТЕМ ПОКАЖИ, В КАКОЙ КЛЕТКЕ БЫЛА КАЖДАЯ ИЗ НИХ",
+        formatScore = units("фигура", "фигуры", "фигур"),
+        play = { LocationGame(it) },
+    ),
+    Exercise(
+        id = "word_list",
+        title = "СПИСОК СЛОВ",
+        subtitle = "ЗАПОМНИ СЛОВА И НАЙДИ ИХ",
+        rules = "ЗАПОМНИ СПИСОК, ЗАТЕМ НАЙДИ ЭТИ СЛОВА СРЕДИ ДРУГИХ. ТРИ РАУНДА: 6, 8 И 10 СЛОВ",
+        formatScore = { "$it ИЗ ${WORD_LIST_SIZES.sum()}" },
+        play = { WordListGame(it) },
+    ),
+    Exercise(
+        id = "paired_words",
+        title = "ПАРЫ СЛОВ",
+        subtitle = "ЗАПОМНИ, КАКИЕ СЛОВА ИДУТ ВМЕСТЕ",
+        rules = "ЗАПОМНИ ПАРЫ СЛОВ. ЗАТЕМ ДЛЯ КАЖДОГО СЛОВА ВЫБЕРИ ЕГО ПАРУ. ТРИ РАУНДА: 4, 5 И 6 ПАР",
+        formatScore = { "$it ИЗ ${PAIRED_SIZES.sum()}" },
+        play = { PairedWordsGame(it) },
+    ),
+    Exercise(
+        id = "speed_match",
+        title = "СОВПАДЕНИЕ",
+        subtitle = "ТАКАЯ ЖЕ, КАК ПРЕДЫДУЩАЯ?",
+        rules = "СОВПАДАЕТ ЛИ ФИГУРА С ПРЕДЫДУЩЕЙ? ОТВЕЧАЙ КАК МОЖНО БЫСТРЕЕ. 45 СЕКУНД, ОШИБКА ОТНИМАЕТ ОЧКО",
+        formatScore = units("очко", "очка", "очков"),
+        play = { SpeedMatchGame(it) },
+    ),
+    Exercise(
+        id = "two_back",
+        title = "ДВА НАЗАД",
+        subtitle = "СРАВНИ С БУКВОЙ ДВА ШАГА НАЗАД",
+        rules = "БУКВЫ ИДУТ ОДНА ЗА ДРУГОЙ. НАЖМИ «СОВПАДАЕТ», ЕСЛИ БУКВА ТАКАЯ ЖЕ, КАК ДВА ШАГА НАЗАД",
+        formatScore = { "$it%" },
+        play = { TwoBackGame(it) },
+    ),
+    Exercise(
+        id = "missing",
+        title = "ПРОПАЖА",
+        subtitle = "КАКОЙ ФИГУРЫ НЕ ХВАТАЕТ?",
+        rules = "ЗАПОМНИ ФИГУРЫ. ПОТОМ ОДНА ИЗ НИХ ИСЧЕЗНЕТ — ВЫБЕРИ, КАКАЯ",
+        formatScore = units("фигура", "фигуры", "фигур"),
+        play = { MissingGame(it) },
+    ),
+    Exercise(
+        id = "order",
+        title = "ОЧЕРЁДНОСТЬ",
+        subtitle = "ВОССТАНОВИ ПОРЯДОК ПОЯВЛЕНИЯ",
+        rules = "ФИГУРЫ ПОЯВЛЯЮТСЯ ПО ОДНОЙ. ЗАТЕМ НАЖМИ НА НИХ В ТОМ ЖЕ ПОРЯДКЕ",
+        formatScore = units("фигура", "фигуры", "фигур"),
+        play = { OrderGame(it) },
+    ),
+)
