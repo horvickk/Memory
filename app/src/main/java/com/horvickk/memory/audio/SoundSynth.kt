@@ -16,44 +16,43 @@ enum class Sound {
 }
 
 /**
- * Синтез звуков в духе мягкой маримбы: синус с быстро гаснущим обертоном,
+ * Синтез звуков в духе мягкой маримбы: почти чистый синус с едва заметным обертоном,
  * плавной атакой и плавным хвостом — без щелчков в начале и в конце.
  */
 internal object SoundSynth {
-    /** Пентатоника до мажор (A4–E6): любые ноты созвучны друг другу и сигналу «верно». */
-    private val SCALE = floatArrayOf(440f, 523.25f, 587.33f, 659.25f, 783.99f, 880f, 1046.5f, 1174.66f, 1318.51f)
+    /** Пентатоника до мажор (G4–D6): любые ноты созвучны друг другу и сигналу «верно». */
+    private val SCALE = floatArrayOf(392f, 440f, 523.25f, 587.33f, 659.25f, 783.99f, 880f, 1046.5f, 1174.66f)
 
-    private const val ATTACK_MS = 6f
     private const val RELEASE_MS = 25f
 
     private class Note(val freq: Float, val offsetMs: Int, val endFreq: Float = freq)
 
     fun render(sound: Sound, sampleRate: Int): FloatArray = when (sound) {
-        Sound.TAP -> chord(sampleRate, listOf(Note(660f, 0)), lengthMs = 60, decayMs = 14f, gain = 0.2f, overtone = 0f)
-        Sound.BLIP -> chord(sampleRate, listOf(Note(880f, 0)), lengthMs = 220, decayMs = 60f, gain = 0.26f)
+        Sound.TAP -> chord(sampleRate, listOf(Note(520f, 0)), lengthMs = 70, decayMs = 16f, gain = 0.16f, attackMs = 4f)
+        Sound.BLIP -> chord(sampleRate, listOf(Note(659.25f, 0)), lengthMs = 240, decayMs = 70f, gain = 0.22f, attackMs = 8f)
         Sound.CORRECT -> chord(
             sampleRate,
-            listOf(Note(659.25f, 0), Note(880f, 90)), // ми — ля: мягкое «динь-динь»
-            lengthMs = 560,
-            decayMs = 150f,
-            gain = 0.26f,
+            listOf(Note(587.33f, 0), Note(783.99f, 90)), // ре — соль: мягкое «динь-динь»
+            lengthMs = 600,
+            decayMs = 160f,
+            gain = 0.22f,
         )
         Sound.WRONG -> chord(
             sampleRate,
             listOf(Note(330f, 0, endFreq = 262f)), // низкий звук, плавно уходящий вниз
-            lengthMs = 380,
+            lengthMs = 400,
             decayMs = 120f,
-            gain = 0.4f,
-            overtone = 0.3f,
+            gain = 0.32f,
+            overtone = 0.15f,
         )
         Sound.FINISH -> chord(
             sampleRate,
             listOf(Note(523.25f, 0), Note(659.25f, 100), Note(783.99f, 200), Note(1046.5f, 300)),
             lengthMs = 900,
             decayMs = 260f,
-            gain = 0.22f,
+            gain = 0.19f,
         )
-        else -> chord(sampleRate, listOf(Note(SCALE[sound.ordinal], 0)), lengthMs = 450, decayMs = 150f, gain = 0.36f)
+        else -> chord(sampleRate, listOf(Note(SCALE[sound.ordinal], 0)), lengthMs = 480, decayMs = 160f, gain = 0.3f)
     }
 
     /** Ноты, звучащие внахлёст: каждая со своим затуханием, общий хвост плавно уходит в ноль. */
@@ -63,21 +62,23 @@ internal object SoundSynth {
         lengthMs: Int,
         decayMs: Float,
         gain: Float,
-        overtone: Float = 0.12f,
+        overtone: Float = 0.04f,
+        // Плавная атака убирает «щелчок» в начале — звук мягче.
+        attackMs: Float = 14f,
     ): FloatArray {
         val noteLength = sampleRate * lengthMs / 1000
         val total = notes.maxOf { sampleRate * it.offsetMs / 1000 } + noteLength
         val out = FloatArray(total)
         for (note in notes) {
             val start = sampleRate * note.offsetMs / 1000
-            val samples = note(sampleRate, note, noteLength, decayMs, overtone)
+            val samples = note(sampleRate, note, noteLength, decayMs, overtone, attackMs)
             for (i in samples.indices) out[start + i] += samples[i] * gain
         }
         return out
     }
 
-    private fun note(sampleRate: Int, note: Note, length: Int, decayMs: Float, overtone: Float): FloatArray {
-        val attack = sampleRate * ATTACK_MS / 1000f
+    private fun note(sampleRate: Int, note: Note, length: Int, decayMs: Float, overtone: Float, attackMs: Float): FloatArray {
+        val attack = sampleRate * attackMs / 1000f
         val release = sampleRate * RELEASE_MS / 1000f
         val tau = sampleRate * decayMs / 1000f
         var phase = 0.0
