@@ -88,7 +88,7 @@ fun SpeedMatchGame(ctx: GameContext) {
         if (!started || over) return
         if (same == (card.shape == previous)) {
             correct++
-            ctx.feedback.tap()
+            ctx.feedback.blip()
             tone = HintTone.CORRECT
         } else {
             wrong++

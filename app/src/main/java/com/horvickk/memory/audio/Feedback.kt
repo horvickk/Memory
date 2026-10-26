@@ -15,6 +15,9 @@ class Feedback(
 
     fun tone(index: Int) = emit(Sound.tone(index), HapticFeedbackConstants.KEYBOARD_TAP)
 
+    /** Короткий мягкий сигнал верного ответа в быстрых играх, где полный «динь-динь» слишком длинный. */
+    fun blip() = emit(Sound.BLIP, HapticFeedbackConstants.KEYBOARD_TAP)
+
     /** Тон без вибрации — для показа последовательностей. */
     fun silentTone(index: Int) {
         if (settings.sound) sounds.play(Sound.tone(index))

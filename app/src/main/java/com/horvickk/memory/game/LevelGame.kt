@@ -76,11 +76,13 @@ fun LevelGame(
     LaunchedEffect(outcome) {
         when (outcome) {
             true -> {
-                ctx.feedback.correct()
                 best = maxOf(best, level)
                 hint = "ВЕРНО!"
                 tone = HintTone.CORRECT
-                delay(900)
+                // Небольшая пауза, чтобы сигнал уровня не накладывался на звук последнего нажатия.
+                delay(120)
+                ctx.feedback.correct()
+                delay(780)
                 level++
                 nextAttempt()
             }

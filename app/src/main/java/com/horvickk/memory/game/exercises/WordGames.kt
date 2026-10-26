@@ -94,7 +94,7 @@ fun VerbalGame(ctx: GameContext) {
         val wasSeen = word in seen
         if (saidSeen == wasSeen) {
             score++
-            ctx.feedback.tap()
+            ctx.feedback.blip()
             hint = "ВЕРНО"
             tone = HintTone.CORRECT
             showNext()
