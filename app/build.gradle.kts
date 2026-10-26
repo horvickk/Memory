@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.horvickk.memory"
+    namespace = "io.horvickk.memory"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.horvickk.memory"
+        applicationId = "io.horvickk.memory"
         minSdk = 26
         targetSdk = 36
         versionCode = 3

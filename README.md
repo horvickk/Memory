@@ -51,7 +51,7 @@ APK подписан общим ключом из `keystore/` (пароль в `
 ## Устройство кода
 
 ```
-app/src/main/java/com/horvickk/memory/
+app/src/main/java/io/horvickk/memory/
 ├── MainActivity.kt          навигация между экранами
 ├── audio/                   синтез коротких звуков и вибрация
 ├── data/                    настройки и история результатов (SharedPreferences)
